@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -7,6 +8,46 @@ import { Play, Star, Users, Calendar } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export function Hero() {
+  // État pour contrôler l'affichage des animations après l'hydratation
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  // Propriétés d'animation conditionnelles
+  const getAnimationProps = (delay: number = 0) => {
+    if (!isClient) {
+      return {}
+    }
+    return {
+      initial: { opacity: 0, y: 30 },
+      animate: { opacity: 1, y: 0 },
+      transition: { duration: 0.8, delay }
+    }
+  }
+
+  const getScaleAnimationProps = (delay: number = 0) => {
+    if (!isClient) {
+      return {}
+    }
+    return {
+      initial: { opacity: 0, scale: 0.8 },
+      animate: { opacity: 1, scale: 1 },
+      transition: { delay, duration: 1 }
+    }
+  }
+
+  const getFloatingProps = (duration: number, delayOffset: number = 0) => {
+    if (!isClient) {
+      return {}
+    }
+    return {
+      animate: { y: [0, -10, 0] },
+      transition: { duration, repeat: Infinity, delay: delayOffset }
+    }
+  }
+
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-primary-50 via-white to-secondary-50 overflow-hidden">
       {/* Background pattern */}
@@ -18,16 +59,16 @@ export function Hero() {
           {/* Contenu texte */}
           <motion.div
             className="space-y-8 text-center lg:text-left"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            {...getAnimationProps(0)}
           >
             {/* Badge */}
             <motion.div
               className="inline-flex items-center px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              {...(isClient ? {
+                initial: { opacity: 0, scale: 0.8 },
+                animate: { opacity: 1, scale: 1 },
+                transition: { delay: 0.2, duration: 0.5 }
+              } : {})}
             >
               <Star className="w-4 h-4 mr-2 fill-current" />
               Coach certifiée depuis 2020
@@ -37,9 +78,7 @@ export function Hero() {
             <div className="space-y-4">
               <motion.h1
                 className="text-4xl md:text-6xl font-heading font-bold text-gray-900 leading-tight"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
+                {...getAnimationProps(0.3)}
               >
                 Transformez votre{' '}
                 <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
@@ -49,9 +88,7 @@ export function Hero() {
 
               <motion.p
                 className="text-xl text-gray-600 max-w-xl mx-auto lg:mx-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                {...getAnimationProps(0.4)}
               >
                 Coaching personnalisé pour atteindre vos objectifs de forme et de bien-être.
                 Des résultats durables avec un accompagnement professionnel.
@@ -61,9 +98,7 @@ export function Hero() {
             {/* Stats rapides */}
             <motion.div
               className="grid grid-cols-3 gap-8 py-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              {...getAnimationProps(0.5)}
             >
               <div className="text-center lg:text-left">
                 <div className="text-2xl font-bold text-primary-600">150+</div>
@@ -82,9 +117,7 @@ export function Hero() {
             {/* Boutons d'action */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              {...getAnimationProps(0.6)}
             >
               <Button asChild size="lg" className="group">
                 <Link href="/contact">
@@ -104,9 +137,11 @@ export function Hero() {
             {/* Social proof */}
             <motion.div
               className="flex items-center justify-center lg:justify-start space-x-4 pt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
+              {...(isClient ? {
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: { delay: 0.8, duration: 0.8 }
+              } : {})}
             >
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
@@ -125,9 +160,7 @@ export function Hero() {
           {/* Image */}
           <motion.div
             className="relative"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
+            {...getScaleAnimationProps(0.4)}
           >
             <div className="relative h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
               {/* Placeholder pour l'image de votre copine */}
@@ -148,8 +181,7 @@ export function Hero() {
               {/* Floating elements */}
               <motion.div
                 className="absolute top-8 left-8 bg-white rounded-xl p-4 shadow-lg"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
+                {...getFloatingProps(3, 0)}
               >
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -159,8 +191,7 @@ export function Hero() {
 
               <motion.div
                 className="absolute bottom-8 right-8 bg-white rounded-xl p-4 shadow-lg"
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
+                {...getFloatingProps(3, 1.5)}
               >
                 <div className="text-center">
                   <div className="text-lg font-bold text-primary-600">4.9/5</div>

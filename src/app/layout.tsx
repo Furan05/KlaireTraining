@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description: 'Coaching personnalisé pour atteindre vos objectifs de forme et de bien-être. Des résultats durables avec un accompagnement professionnel.',
   keywords: 'coach sportif, fitness, musculation, perte de poids, remise en forme, paris',
   authors: [{ name: 'Klaire Training' }],
+  icons: {
+    icon: '/favicon.ico',
+  },
   openGraph: {
     title: 'Klaire Training - Coach Sportif Personnel',
     description: 'Transformez votre corps et votre vie avec un coaching personnalisé',
@@ -36,10 +39,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${inter.variable} ${poppins.variable}`}>
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.className} antialiased`}
+        suppressHydrationWarning={true}
+      >
         <Header />
         {children}
       </body>
